@@ -1,19 +1,32 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from nltk.tokenize import RegexpTokenizer
 from stop_words import get_stop_words
 from gensim import corpora, models
 from nltk.stem.snowball import SnowballStemmer
+from cucco import Cucco
 import Stemmer
+    
 
 def preprocessing(doc_set):
 	print("Iniciando preprocesamiento...")
 	tokenizer = RegexpTokenizer(r'\w+')
+
 	es_stop = get_stop_words('es')
-	#stemmer = Stemmer.Stemmer('spanish')
+	
+	normEsp = Cucco(language='es')
+	norms = ['remove_stop_words', 'replace_punctuation', 'remove_extra_whitespaces', 'remove_accent_marks']
+
+
 	stemmer = SnowballStemmer('spanish')
+	#stemmer = Stemmer.Stemmer('spanish')
 
 	out_set = []
 
 	for doc in doc_set:
+		doc = normEsp.normalize(doc, norms)
+		print(doc)
 		raw = doc.lower()
 		tokens = tokenizer.tokenize(raw)
 
@@ -36,8 +49,4 @@ def preprocessing(doc_set):
 	print("Done")
 
 	return dictionary , corpus
-
-
-
-
 
