@@ -38,5 +38,5 @@ def getSentimentScore(tokens, dictByTopic, dictTokens):
 	return num_v / den_v, num_a / den_a
 
 d = loadDict()
-#v, a = getSentimentScore(['hate', 'sad', 'love'], 1, d)
-#print v, a
+v, a = getSentimentScore(['triste', 'feliz', 'amor'], 1, d)
+print v, a
