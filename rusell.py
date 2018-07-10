@@ -4,6 +4,7 @@
 import sys
 import re
 import unicodedata
+from sentiments import *
 
 DICTONARY_FILE_ = "DICT_v1.csv"
 F_D_ = {'w': 1, 'v_m': 2, 'v_o': 3, 'a_m': 5, 'a_o': 6}
@@ -38,6 +39,45 @@ def getSentimentScore(tokens, dictByTopic, dictTokens):
 			den_a += (td / dictTokens[tokens[i]]['a'][1])
 	return num_v / den_v if den_v != 0 else 0, num_a / den_a if den_a != 0 else 0
 
-d = loadDict()
-v, a = getSentimentScore(['odio', 'tristeza', 'amor'], 1, d)
-print v, a
+#tweet_set: ya debe estar preprocesado.
+def getSentimentScoreOfTweets(tweet_set):
+	sentDic = loadDict()
+	return [getSentimentScore(tweet, 1, sentDic) for tweet in tweet_set]
+
+def getSentimentsScoreOfTopics(tweet_set, topics, dictionaryWord):
+	sentDic = loadDict()
+	dictByTopic = {}
+	resultado = []
+	for topic in topics:
+		dictByTopic = {}
+		for i in range(0,len(topic)):
+			dictByTopic[dictionaryWord[i]] = topic[i]
+		resultado.append([getSentimentScore(tweet, dictByTopic, sentDic) for tweet in tweet_set])
+	return resultado
+
+def polaritySent(russell_tuple):
+	if(russell_tuple[0] > 5):
+		return Sentiments.POSITIVE.value
+	else:
+		return Sentiments.NEGATIVE.value
+
+def primarySent(russell_tuple, sentimentPoints):
+	distancias = []
+	i_min = -1
+	min_distance = -1
+	for point in sentimentPoints:
+		distancias.append(math.sqrt(math.pow(point[0] - russell_tuple[0],2) + math.pow(point[1] - russell_tuple[1],2)))
+	for i in range(0, len(sentimentPoints)):
+		if (min_distance == -1 or min_distance < distancias[i]):
+			i_min = i
+			min_distance = distancias[i]
+	return i_min
+
+
+
+
+
+
+#d = loadDict()
+#v, a = getSentimentScore(['odio', 'tristeza', 'amor'], 1, d)
+#print v, a
