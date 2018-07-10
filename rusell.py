@@ -32,6 +32,8 @@ def getSentimentScore(tokens, dictByTopic, dictTokens):
 	num_v, den_v, num_a, den_a = 0, 0, 0, 0
 	for i in range(0, len(tokens)):
 		if (tokens[i] in dictTokens):
+			if(dictTokens[tokens[i]]['v'][1] == 0):
+				return 0 , 0
 			td = dictByTopic[tokens[i]] if type(dictByTopic) is dict else dictByTopic
 			num_v += ((td * dictTokens[tokens[i]]['v'][0]) / dictTokens[tokens[i]]['v'][1])
 			den_v += (td / dictTokens[tokens[i]]['v'][1])
@@ -44,16 +46,20 @@ def getSentimentScoreOfTweets(tweet_set):
 	sentDic = loadDict()
 	return [getSentimentScore(tweet, 1, sentDic) for tweet in tweet_set]
 
-def getSentimentsScoreOfTopics(tweet_set, topics, dictionaryWord):
-	sentDic = loadDict()
+def getSentimentsScoreOfTopics(tweet, topics, dictionaryWord, topico, sentDic):
 	dictByTopic = {}
 	resultado = []
-	for topic in topics:
-		dictByTopic = {}
-		for i in range(0,len(topic)):
-			dictByTopic[dictionaryWord[i]] = topic[i]
-		resultado.append([getSentimentScore(tweet, dictByTopic, sentDic) for tweet in tweet_set])
-	return resultado
+	topic = topics[topico]
+	for i in range(0,len(topic)):
+		dictByTopic[dictionaryWord[i]] = topic[i]
+	return getSentimentScore(tweet, dictByTopic, sentDic)
+
+	#for topic in topics:
+	#	dictByTopic = {}
+	#	for i in range(0,len(topic)):
+	#		dictByTopic[dictionaryWord[i]] = topic[i]
+	#	resultado.append([getSentimentScore(tweet, dictByTopic, sentDic) for tweet in tweet_set])
+	#return resultado
 
 def getPolaritySent(russell_tuple):
 	if(russell_tuple[0] > 5):
@@ -70,7 +76,7 @@ def getPrimarySent(russell_tuple, sentimentPoints):
 	for point in sentimentPoints:
 		distancias.append(math.sqrt(math.pow(point[0] - russell_tuple[0],2) + math.pow(point[1] - russell_tuple[1],2)))
 	for i in range(0, len(sentimentPoints)):
-		if (min_distance == -1 or min_distance < distancias[i]):
+		if (min_distance == -1 or min_distance > distancias[i]):
 			i_min = i
 			min_distance = distancias[i]
 	return i_min
