@@ -55,13 +55,15 @@ def getSentimentsScoreOfTopics(tweet_set, topics, dictionaryWord):
 		resultado.append([getSentimentScore(tweet, dictByTopic, sentDic) for tweet in tweet_set])
 	return resultado
 
-def polaritySent(russell_tuple):
+def getPolaritySent(russell_tuple):
 	if(russell_tuple[0] > 5):
 		return Sentiments.POSITIVE.value
 	else:
 		return Sentiments.NEGATIVE.value
 
-def primarySent(russell_tuple, sentimentPoints):
+def getPrimarySent(russell_tuple, sentimentPoints):
+	if(russell_tuple[0] == 0 and russell_tuple[1] == 0):
+		return Sentiments.INDETERMINADO.value
 	distancias = []
 	i_min = -1
 	min_distance = -1

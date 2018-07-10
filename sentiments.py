@@ -20,6 +20,7 @@ class Sentiments(Enum):
 	TENSO = 15
 	NEGATIVE = 16
 	POSITIVE = 17
+	INDETERMINADO = 18
 
 def getStrOfSentiment(sentiment):
 	if(sentiment == Sentiments.FELIZ.value):
@@ -58,6 +59,8 @@ def getStrOfSentiment(sentiment):
 		return 'Negativo'
 	elif(sentiment == Sentiments.POSITIVE.value):
 		return 'Positivo'
+	elif(sentiment == Sentiments.INDETERMINADO.value):
+		return 'Indeterminado'
 
 def getSentimentPoints():
 	xCenter = 5
