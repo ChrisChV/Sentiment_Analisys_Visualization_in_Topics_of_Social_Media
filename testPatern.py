@@ -24,9 +24,33 @@
 #res = [a[4] for a in [b.split("/") for b in s.split(" ")]]
 #print(res)
 
-from preprocessing import *
+#from preprocessing import *
 
 
-doc_set = [u'Recuerda que estar pendientes de nuestra salud es muy importante, realizate chequeos constantemente']
+#doc_set = [u'Recuerda que estar pendientes de nuestra salud es muy importante, realizate chequeos constantemente']
 
-preprocessing(doc_set)
+#preprocessing(doc_set)
+
+from TweetClass import *
+
+tweet1_t = "Hola"
+tweet2_t = "Adios"
+
+dicUsers = {}
+dicUsers['usuario1'] = UserClass()
+
+tweet1_t = TweetClass(tweet1_t, dicUsers['usuario1'])
+tweet2_t = TweetClass(tweet2_t, dicUsers['usuario1'])
+
+
+if('usuario1' in dicUsers):
+	dicUsers['usuario1'].addTweet(tweet1_t)
+	dicUsers['usuario1'].addTweet(tweet2_t)
+
+print(dicUsers['usuario1'].tweet_set)
+print(tweet1_t.usuario.tweet_set)
+
+
+
+
+

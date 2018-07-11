@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 from preprocessing import *
 from LDA import * 
 from pymongo import MongoClient
 from rusell import *
 from evaluation import * 
 from TweetClass import *
+from network import * 
+
 
 doc_a = u'Hola mundo este es el mensaje uno y dos por dos. Queremos'
 doc_b = u'Adios mundo voy a ir a comer. Fin del mensaje 2.'
@@ -17,24 +20,46 @@ print('Obteniendo Datos...')
 
 doc_set = []
 tweet_set = []
-client = MongoClient('mongodb://twitter:twitter@10.42.0.1/twitter')
+dic_user = {}
+client = MongoClient('mongodb://twitter:twitter@172.16.5.57/twitter')
 db = client['twitter']
 collection = db['Rusia2018']
 c = 0
-for tweet in collection.find({},{"text":1}):
+for tweet in collection.find({},{"text":1,"user":1, "in_reply_to_user_id":1}):
+	userId = tweet['user']['id']
+	userIdConnec = tweet['in_reply_to_user_id']
+	if not(userId in dic_user):
+		dic_user[userId] = UserClass(userId)
+	if(userIdConnec):
+		#print("AAAAAAAAAAAA")
+		if not(userIdConnec in dic_user):
+			dic_user[userIdConnec] = UserClass(userId)
+		dic_user[userId].addUser(dic_user[userIdConnec])
 	doc_set.append(tweet['text'])
-	tweet_set.append(TweetClass(tweet['text']))
+	tweet_set.append(TweetClass(tweet['text'], dic_user[userId]))
+	dic_user[userId].addTweet(tweet_set[len(tweet_set) - 1])
+
 	c += 1
-#	if c == 1500:
-#		break
+	#if c == 500:
+	#	break
+
+#for userId, user in dic_user.iteritems():
+#	print(str(userId) + " " + str(len(user.tweet_set)))
+
 
 print(str(c) + " tweets cargados")
+print(str(len(dic_user)) + " usuarios cargados")
+
 
 k_topics = 3
 LDA_iterations = 500
 sentimentPoints = getSentimentPoints()
 
 dictionary, corpus, out_set = preprocessing(doc_set)
+
+fileOut = open("out_dic", 'w')
+print(dictionary, file = fileOut)
+fileOut.close()
 
 for i in range(0,len(out_set)):
 	tweet_set[i].wordSet = out_set[i]
@@ -52,8 +77,9 @@ print(sentimentsOfTweets)
 for i in range(0,len(sentimentsOfTweets)):
 	tweet_set[i].russell_tuple = sentimentsOfTweets[i]
 
-
-print (model.print_topics(num_topics=k_topics, num_words=3))
+fileOut = open("out_model", 'w')
+print (model.print_topics(num_topics=k_topics, num_words=10), file = fileOut)
+fileOut.close()
 
 print(getStrOfSentiment(getPolaritySent(sentimentsOfTweets[0])))
 print(getStrOfSentiment(getPrimarySent(sentimentsOfTweets[0], sentimentPoints)))
@@ -86,17 +112,26 @@ print("End...")
 for tweet in tweet_set:
 	tweet.printClass()
 
-
-print(person(sentimentsOfTweets))
 sentimentsOfTopics = []
 valoresPersonOfTopics = []
+TweetInTopicCount = [0] * k_topics
+UserInTopicCount = [0] * k_topics
+for tweet in tweet_set:
+	TweetInTopicCount[tweet.topic] += 1
+for userId, user in dic_user.iteritems():
+	UserInTopicCount[user.setPrincipalTopic(k_topics)] += 1
+
 for i in range(0, k_topics):
 	sentimentsOfTopics.append([])
 for tweet in tweet_set:
 	sentimentsOfTopics[tweet.topic].append(tweet.russell_tuple_topic)
 for i in range(0,k_topics):
 	valoresPersonOfTopics.append(person(sentimentsOfTopics[i]))
-	print(valoresPersonOfTopics[i])
 
 
+print(str(len(tweet_set)) + " " + str(len(dic_user)) + " " + str(person(sentimentsOfTweets)))
+for i in range(0,k_topics):
+	print(str(TweetInTopicCount[i]) + " " + str(UserInTopicCount[i]) + " " + str(valoresPersonOfTopics[i]))
 
+
+generateGraph(dic_user, k_topics, "out_graph")
