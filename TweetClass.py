@@ -1,15 +1,18 @@
+from __future__ import print_function
 from sentiments import *
 
 class UserClass:
  	userId = ""
 	tweet_set = []
 	users_connections = []
-	principat_topic = 0
+	principal_topic = 0
 
 	def __init__(self, userId):
 		self.userId = userId
 		self.tweet_set = []
 		self.users_connections = []
+		self.principal_topic = 0
+
 	def addTweet(self, tweet):
 		self.tweet_set.append(tweet)
 	def addUser(self, user):
@@ -24,9 +27,14 @@ class UserClass:
 			if(i_max == -1 or val_max < count[i]):
 				i_max = i
 				val_max = count[i]
-		principat_topic = i_max
+		self.principal_topic = i_max
 		return i_max
-
+	def saveClass(self, outFile):
+		print(self.userId, file=outFile)
+		print(len(self.users_connections), file=outFile)
+		for user_con in self.users_connections:
+			print(user_con.userId , file=outFile)
+		print(self.principal_topic, file=outFile)
 
 class TweetClass:
 	#def __init__(self, originalTweet):
@@ -34,6 +42,15 @@ class TweetClass:
 	def __init__(self, originalTweet, user):
 		self.originalTweet = originalTweet
 		self.usuario = user
+		self.wordSet = []
+		self.russell_tuple = []
+		self.russell_tuple_topic = []
+		self.polaritySent = 0
+		self.primarySent = 0
+		self.topic = 0
+		self.tweetId = ""
+
+
 	def printClass(self):
 		print(self.originalTweet)
 		print(self.wordSet)
@@ -45,6 +62,20 @@ class TweetClass:
 
 		print
 
+	def saveClass(self, outFile):
+		#print(self.originalTweet, file=outFile)
+		print(self.usuario.userId, file=outFile)
+		print(self.wordSet, file=outFile)
+		print(self.russell_tuple, file=outFile)
+		print(self.russell_tuple_topic, file=outFile)
+		print(self.polaritySent, file=outFile)
+		print(self.primarySent, file=outFile)
+		print(self.topic, file=outFile)
+
+	def updateTweet(self, collection):
+		collection.update_one({'_id': self.tweetId}, {'$set': {'sentiment': self.primarySent}})
+
+	tweetId = ""
 	originalTweet = ""
 	usuario = ""
 	wordSet = []
@@ -53,3 +84,67 @@ class TweetClass:
 	polaritySent = 0
 	primarySent = 0
 	topic = 0
+
+def updateTweets(tweet_set, collection):
+	for tweet in tweet_set:
+		tweet.updateTweet(collection)
+
+def saveTweets(tweet_set, fileName):
+	outFile = open(fileName, 'w')
+	print(len(tweet_set), file=outFile)
+	for tweet in tweet_set:
+		tweet.saveClass(outFile)
+
+def saveUsers(dic_user, fileName):
+	outFile = open(fileName, 'w')
+	print(len(dic_user), file=outFile)
+	for userId , user in dic_user.iteritems():
+		user.saveClass(outFile)
+
+def loadTweetsAndUsers(userFileName , tweetFileName):
+	dic_user = {}
+	tweet_set = []
+	userFile = open(userFileName, "r")
+	userLines = userFile.readlines()
+	userLines = [x.strip() for x in userLines]
+	numOfUsers = int(userLines[0])
+	i = 1
+	for j in range(0, numOfUsers):
+		userId = userLines[i]
+		i += 1
+		if not(userId in dic_user):
+			dic_user[userId] = UserClass(userId)
+		numConUsers = int(userLines[i])
+		i += 1
+		for k in range(0, numConUsers):
+			userIdCon = userLines[i]
+			i += 1
+			if not(userIdCon in dic_user):
+				dic_user[userIdCon] = UserClass(userIdCon)
+			dic_user[userId].addUser(dic_user[userIdCon])
+		principalTopic = int(userLines[i])
+		i += 1
+		dic_user[userId].principal_topic = principalTopic
+
+	tweetFile = open(tweetFileName, 'r')
+	tweetLines = tweetFile.readlines()
+	tweetLines = [x.strip() for x in tweetLines]
+	numOfTweets = int(tweetLines[0])
+	print(tweetLines)
+	i = 1
+
+	#for j in range(0, numOfTweets):
+	#	userId = userLines[i]		
+	#	i += 1
+	#	tweet_set.append(TweetClass("Tweet", dic_user[userId]))
+
+
+
+
+
+
+
+
+
+
+

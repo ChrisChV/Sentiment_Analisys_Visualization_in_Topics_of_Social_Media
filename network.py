@@ -6,10 +6,27 @@ def generateGraph(user_set, numOfTopics , outFileName):
 	outFile = open(outFileName, 'w')
 	srtRelacion = " "
 	srtTopic = "topic"
+	dic_nodes = {}
+	actualNode = 0
+	#for userId, user in user_set.iteritems():
+	#	dic_nodes[userId] = actualNode
+	#	actualNode += 1
+		#for i in range(0, numOfTopics):
+		#	dic_nodes[str(userId) + srtTopic + str(i)] = actualNode
+		#	actualNode += 1
 	for userId, user in user_set.iteritems():
-		for i in range(0, numOfTopics):
-			for j in range(0, numOfTopics):
-				outFile.write(str(user.userId) + srtTopic + str(i) + srtRelacion + str(user.userId) + srtTopic + str(j) + '\n')
-			for user_con in user.users_connections:
-				outFile.write(str(user.userId) + srtTopic + str(i) + srtRelacion + str(user_con.userId) + srtTopic + str(i) + '\n')
+		#for i in range(0, numOfTopics):
+			#for j in range(0, numOfTopics):
+			#	if i != j:
+			#		outFile.write(str(dic_nodes[str(user.userId) + srtTopic + str(i)]) + srtRelacion + str(dic_nodes[str(user.userId) + srtTopic + str(j)]) + '\n')
+			#for user_con in user.users_cocnnections:
+			#	outFile.write(str(dic_nodes[str(user.userId) + srtTopic + str(i)]) + srtRelacion + str(dic_nodes[str(user_con.userId) + srtTopic + str(i)]) + '\n')
+		for user_con in user.users_connections:
+			if not(user.userId in dic_nodes):
+				dic_nodes[user.userId] = actualNode
+				actualNode += 1
+			if not(user_con.userId in dic_nodes):
+				dic_nodes[user_con.userId] = actualNode
+				actualNode += 1
+			outFile.write(str(dic_nodes[user.userId]) + srtRelacion + str(dic_nodes[user_con.userId]) + '\n')
 	outFile.close()

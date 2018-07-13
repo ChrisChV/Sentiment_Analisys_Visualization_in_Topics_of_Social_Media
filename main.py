@@ -21,11 +21,11 @@ print('Obteniendo Datos...')
 doc_set = []
 tweet_set = []
 dic_user = {}
-client = MongoClient('mongodb://twitter:twitter@172.16.5.57/twitter')
+client = MongoClient('mongodb://twitter:twitter@10.42.0.1/twitter')
 db = client['twitter']
-collection = db['Rusia2018']
+collection = db['Croacia']
 c = 0
-for tweet in collection.find({},{"text":1,"user":1, "in_reply_to_user_id":1}):
+for tweet in collection.find({},{"_id":1, "text":1,"user":1, "in_reply_to_user_id":1}):
 	userId = tweet['user']['id']
 	userIdConnec = tweet['in_reply_to_user_id']
 	if not(userId in dic_user):
@@ -33,15 +33,16 @@ for tweet in collection.find({},{"text":1,"user":1, "in_reply_to_user_id":1}):
 	if(userIdConnec):
 		#print("AAAAAAAAAAAA")
 		if not(userIdConnec in dic_user):
-			dic_user[userIdConnec] = UserClass(userId)
+			dic_user[userIdConnec] = UserClass(userIdConnec)
 		dic_user[userId].addUser(dic_user[userIdConnec])
 	doc_set.append(tweet['text'])
 	tweet_set.append(TweetClass(tweet['text'], dic_user[userId]))
+	tweet_set[len(tweet_set) - 1].tweetId = tweet['_id']
 	dic_user[userId].addTweet(tweet_set[len(tweet_set) - 1])
 
 	c += 1
-	#if c == 500:
-	#	break
+#	if c == 500:
+#		break
 
 #for userId, user in dic_user.iteritems():
 #	print(str(userId) + " " + str(len(user.tweet_set)))
@@ -105,7 +106,14 @@ for i in range(0,len(tweet_set)):
 	tweet_set[i].polaritySent = getPolaritySent(tweet_set[i].russell_tuple)
 	tweet_set[i].primarySent = getPrimarySent(tweet_set[i].russell_tuple, sentimentPoints)
 	tweet_set[i].topic = getTopic(tweet_set[i].wordSet, model.get_topics(), dictionary, dictByTopic)
-	tweet_set[i].russell_tuple_topic = getSentimentsScoreOfTopics(tweet_set[i].wordSet, model.get_topics(), dictionary, tweet_set[i].topic, sentDic)
+	tweet_set[i].russell_tuple_topic = getSentimentScore(tweet_set[i].wordSet, dictByTopic[tweet_set[i].topic], sentDic)
+	#tweet_set[i].russell_tuple_topic = getSentimentsScoreOfTopics(tweet_set[i].wordSet, model.get_topics(), dictionary, tweet_set[i].topic, sentDic)
+
+
+print("Guardando Tweets...")
+saveTweets(tweet_set, "out_tweets")
+saveUsers(dic_user, "out_users")
+#updateTweets(tweet_set, collection)
 
 print("End...")
 
@@ -135,3 +143,5 @@ for i in range(0,k_topics):
 
 
 generateGraph(dic_user, k_topics, "out_graph")
+
+
