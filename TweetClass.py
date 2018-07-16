@@ -89,11 +89,17 @@ class TweetClass:
 
 	def saveVectorTopic(self, outFile):
 		outFile.write(str(self.tweetId) + getStrOfSentiment(self.topicSent) + ';')
-		for i in range(0, len(self.characteristic_vector)):
-			if(i != len(self.characteristic_vector) - 1):
+		for i in range(0, len(self.topic_characteristic_vector)):
+			if(i != len(self.topic_characteristic_vector) - 1):
 				outFile.write(str(i) + ":" + str(self.topic_characteristic_vector[i]) + ";")
 			else:
 				outFile.write(str(i) + ":" + str(self.topic_characteristic_vector[i]) + ";0.0\n")		
+
+	def saveRusellTuple(self, outFile):
+		outFile.write(str(self.russell_tuple[0]) + "," + str(self.russell_tuple[1]) + '\n')
+
+	def saveRusellTupleTopic(self, outFile):
+		outFile.write(str(self.russell_tuple_topic[0]) + "," + str(self.russell_tuple_topic[1]) + '\n')		
 
 	tweetId = ""
 	originalTweet = ""
@@ -121,6 +127,7 @@ def saveCharacteristicVectors(tweet_set, fileName):
 	for tweet in tweet_set:
 		if(tweet.primarySent != Sentiments.INDETERMINADO.value):
 			tweet.saveVector(outFile)
+	outFile.close()
 
 def saveTopicCharacteristicVectors(tweet_set, fileName, topicID):
 	outFile = open(fileName, 'w')
@@ -135,6 +142,21 @@ def saveTopicCharacteristicVectors(tweet_set, fileName, topicID):
 	for tweet in tweet_set:
 		if(tweet.topic == topicID and tweet.topicSent != Sentiments.INDETERMINADO.value):
 			tweet.saveVectorTopic(outFile)	
+	outFile.close()
+
+def saveRussellTuples(tweet_set, fileName):
+	outFile = open(fileName, 'w')
+	for tweet in tweet_set:
+		if(tweet.primarySent != Sentiments.INDETERMINADO.value):
+			tweet.saveRusellTuple(outFile)
+	outFile.close()
+
+def saveRusellTuplesTopic(tweet_set, fileName, topicID):
+	outFile = open(fileName, 'w')
+	for tweet in tweet_set:
+		if(tweet.topic == topicID and tweet.primarySent != Sentiments.INDETERMINADO.value):
+			tweet.saveRusellTupleTopic(outFile)
+	outFile.close()	
 
 def updateTweets(tweet_set, collection):
 	for tweet in tweet_set:
