@@ -109,6 +109,7 @@ for i in range(0,len(tweet_set)):
 	tweet_set[i].primarySent, tweet_set[i].characteristic_vector = getPrimarySent(tweet_set[i].russell_tuple, sentimentPoints)
 	tweet_set[i].topic = getTopic(tweet_set[i].wordSet, model.get_topics(), dictionary, dictByTopic)
 	tweet_set[i].russell_tuple_topic = getSentimentScore(tweet_set[i].wordSet, dictByTopic[tweet_set[i].topic], sentDic)
+	tweet_set[i].topicSent, tweet_set[i].topic_characteristic_vector = getPrimarySent(tweet_set[i].russell_tuple_topic, sentimentPoints)
 	#tweet_set[i].russell_tuple_topic = getSentimentsScoreOfTopics(tweet_set[i].wordSet, model.get_topics(), dictionary, tweet_set[i].topic, sentDic)
 
 

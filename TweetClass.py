@@ -46,8 +46,10 @@ class TweetClass:
 		self.russell_tuple = []
 		self.russell_tuple_topic = []
 		self.characteristic_vector = []
+		self.topic_characteristic_vector = []
 		self.polaritySent = 0
 		self.primarySent = 0
+		self.topicSent = 0
 		self.topic = 0
 		self.tweetId = ""
 
@@ -83,7 +85,7 @@ class TweetClass:
 			if(i != len(self.characteristic_vector) - 1):
 				outFile.write(str(i) + ":" + str(self.characteristic_vector[i]) + ";")
 			else:
-				outFile.write(str(i) + ":" + str(self.characteristic_vector[i]) + "\n")
+				outFile.write(str(i) + ":" + str(self.characteristic_vector[i]) + ";0.0\n")
 
 
 	tweetId = ""
@@ -93,8 +95,10 @@ class TweetClass:
 	russell_tuple = []
 	russell_tuple_topic = []
 	characteristic_vector = []
+	topic_characteristic_vector = []
 	polaritySent = 0
 	primarySent = 0
+	topicSent = 0
 	topic = 0
 
 def saveCharacteristicVectors(tweet_set, fileName):
