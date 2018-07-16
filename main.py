@@ -21,9 +21,9 @@ print('Obteniendo Datos...')
 doc_set = []
 tweet_set = []
 dic_user = {}
-client = MongoClient('mongodb://twitter:twitter@10.42.0.1/twitter')
+client = MongoClient('mongodb://twitter:twitter@cs.csunsa.win/twitter')
 db = client['twitter']
-collection = db['Croacia']
+collection = db['Rusia2018']
 c = 0
 for tweet in collection.find({},{"_id":1, "text":1,"user":1, "in_reply_to_user_id":1}):
 	userId = tweet['user']['id']
@@ -82,9 +82,9 @@ fileOut = open("out_model", 'w')
 print (model.print_topics(num_topics=k_topics, num_words=10), file = fileOut)
 fileOut.close()
 
-print(getStrOfSentiment(getPolaritySent(sentimentsOfTweets[0])))
-print(getStrOfSentiment(getPrimarySent(sentimentsOfTweets[0], sentimentPoints)))
-
+#print(getStrOfSentiment(getPolaritySent(sentimentsOfTweets[0])))
+#print(getStrOfSentiment(getPrimarySent(sentimentsOfTweets[0], sentimentPoints)))
+	
 sentDic = loadDict()
 
 print("Evaluando...")
@@ -104,7 +104,9 @@ for topic in topics:
 for i in range(0,len(tweet_set)):
 	print(str(i) + "/" + str(len(tweet_set)))
 	tweet_set[i].polaritySent = getPolaritySent(tweet_set[i].russell_tuple)
-	tweet_set[i].primarySent = getPrimarySent(tweet_set[i].russell_tuple, sentimentPoints)
+	#tweet_set[i].characteristic_vector = getCharacteristicVector(tweet_set[i].russell_tuple, sentimentPoints)
+	#tweet_set[i].primarySent = getPrimarySent(tweet_set[i].characteristic_vector)
+	tweet_set[i].primarySent, tweet_set[i].characteristic_vector = getPrimarySent(tweet_set[i].russell_tuple, sentimentPoints)
 	tweet_set[i].topic = getTopic(tweet_set[i].wordSet, model.get_topics(), dictionary, dictByTopic)
 	tweet_set[i].russell_tuple_topic = getSentimentScore(tweet_set[i].wordSet, dictByTopic[tweet_set[i].topic], sentDic)
 	#tweet_set[i].russell_tuple_topic = getSentimentsScoreOfTopics(tweet_set[i].wordSet, model.get_topics(), dictionary, tweet_set[i].topic, sentDic)
@@ -143,5 +145,6 @@ for i in range(0,k_topics):
 
 
 generateGraph(dic_user, k_topics, "out_graph")
+saveCharacteristicVectors(tweet_set, "out_chac")
 
 

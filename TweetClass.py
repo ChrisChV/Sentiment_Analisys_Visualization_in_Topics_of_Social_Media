@@ -45,6 +45,7 @@ class TweetClass:
 		self.wordSet = []
 		self.russell_tuple = []
 		self.russell_tuple_topic = []
+		self.characteristic_vector = []
 		self.polaritySent = 0
 		self.primarySent = 0
 		self.topic = 0
@@ -59,6 +60,7 @@ class TweetClass:
 		print(self.topic)
 		print(getStrOfSentiment(self.polaritySent))
 		print(getStrOfSentiment(self.primarySent))
+		print(self.characteristic_vector)
 
 		print
 
@@ -75,15 +77,39 @@ class TweetClass:
 	def updateTweet(self, collection):
 		collection.update_one({'_id': self.tweetId}, {'$set': {'sentiment': self.primarySent}})
 
+	def saveVector(self, outFile):
+		outFile.write(str(self.tweetId) + getStrOfSentiment(self.primarySent) + ';')
+		for i in range(0, len(self.characteristic_vector)):
+			if(i != len(self.characteristic_vector) - 1):
+				outFile.write(str(i) + ":" + str(self.characteristic_vector[i]) + ";")
+			else:
+				outFile.write(str(i) + ":" + str(self.characteristic_vector[i]) + "\n")
+
+
 	tweetId = ""
 	originalTweet = ""
 	usuario = ""
 	wordSet = []
 	russell_tuple = []
 	russell_tuple_topic = []
+	characteristic_vector = []
 	polaritySent = 0
 	primarySent = 0
 	topic = 0
+
+def saveCharacteristicVectors(tweet_set, fileName):
+	outFile = open(fileName, 'w')
+	numOfTweets = 0
+	for tweet in tweet_set:
+		if(tweet.primarySent != Sentiments.INDETERMINADO.value):
+			numOfTweets += 1
+	outFile.write('SY\n')
+	outFile.write(str(numOfTweets) + '\n')
+	outFile.write('16\n')
+	outFile.write('happy;elated;excited;alert;tense;nervous;stressed;upset;sad;unhappy;depressed;bored;calm;relaxed;serene;contented\n')
+	for tweet in tweet_set:
+		if(tweet.primarySent != Sentiments.INDETERMINADO.value):
+			tweet.saveVector(outFile)
 
 def updateTweets(tweet_set, collection):
 	for tweet in tweet_set:

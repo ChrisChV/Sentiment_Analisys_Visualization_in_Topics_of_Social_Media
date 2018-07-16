@@ -67,9 +67,29 @@ def getPolaritySent(russell_tuple):
 	else:
 		return Sentiments.NEGATIVE.value
 
+#def getCharacteristicVector(russell_tuple, sentimentPoints):
+#	if(russell_tuple[0] == 0 and russell_tuple[1] == 0):
+#		return [0] * 
+#	distancias = []
+#	for point in sentimentPoints:
+#		distancias.append(math.sqrt(math.pow(point[0] - russell_tuple[0],2) + math.pow(point[1] - russell_tuple[1],2)))
+#	distancias = [1.0 / float(i) for i in distancias]
+#	return distancias
+
+#def getPrimarySent(characteristic_vector):
+#	i_max = -1
+#	max_characteristic = -1
+#	for i in range(0, len(characteristic_vector)):
+#		if(max_characteristic == -1 or max_characteristic < characteristic_vector[i]):
+#			i_max = i
+#			max_characteristic = characteristic_vector[i]
+#	return i_max
+	
+
+
 def getPrimarySent(russell_tuple, sentimentPoints):
 	if(russell_tuple[0] == 0 and russell_tuple[1] == 0):
-		return Sentiments.INDETERMINADO.value
+		return Sentiments.INDETERMINADO.value, [0] * 16
 	distancias = []
 	i_min = -1
 	min_distance = -1
@@ -79,7 +99,9 @@ def getPrimarySent(russell_tuple, sentimentPoints):
 		if (min_distance == -1 or min_distance > distancias[i]):
 			i_min = i
 			min_distance = distancias[i]
-	return i_min
+	distancias = [1.0 / float(i) for i in distancias]
+
+	return i_min, distancias
 
 
 
