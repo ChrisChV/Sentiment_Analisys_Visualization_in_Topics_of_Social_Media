@@ -87,6 +87,13 @@ class TweetClass:
 			else:
 				outFile.write(str(i) + ":" + str(self.characteristic_vector[i]) + ";0.0\n")
 
+	def saveVectorTopic(self, outFile):
+		outFile.write(str(self.tweetId) + getStrOfSentiment(self.topicSent) + ';')
+		for i in range(0, len(self.characteristic_vector)):
+			if(i != len(self.characteristic_vector) - 1):
+				outFile.write(str(i) + ":" + str(self.topic_characteristic_vector[i]) + ";")
+			else:
+				outFile.write(str(i) + ":" + str(self.topic_characteristic_vector[i]) + ";0.0\n")		
 
 	tweetId = ""
 	originalTweet = ""
@@ -114,6 +121,20 @@ def saveCharacteristicVectors(tweet_set, fileName):
 	for tweet in tweet_set:
 		if(tweet.primarySent != Sentiments.INDETERMINADO.value):
 			tweet.saveVector(outFile)
+
+def saveTopicCharacteristicVectors(tweet_set, fileName, topicID):
+	outFile = open(fileName, 'w')
+	numOfTweets = 0
+	for tweet in tweet_set:
+		if(tweet.topic == topicID and tweet.topicSent != Sentiments.INDETERMINADO.value):
+			numOfTweets += 1
+	outFile.write('SY\n')
+	outFile.write(str(numOfTweets) + '\n')
+	outFile.write('16\n')
+	outFile.write('happy;elated;excited;alert;tense;nervous;stressed;upset;sad;unhappy;depressed;bored;calm;relaxed;serene;contented\n')
+	for tweet in tweet_set:
+		if(tweet.topic == topicID and tweet.topicSent != Sentiments.INDETERMINADO.value):
+			tweet.saveVectorTopic(outFile)	
 
 def updateTweets(tweet_set, collection):
 	for tweet in tweet_set:
