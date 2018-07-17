@@ -4,6 +4,7 @@ from TweetClass import *
 
 def generateGraph(user_set, numOfTopics , outFileName):
 	outFile = open(outFileName, 'w')
+	outFile2 = open(outFileName + "_users", 'w')
 	srtRelacion = " -- "
 	srtTopic = "topic"
 	dic_nodes = {}
@@ -24,9 +25,13 @@ def generateGraph(user_set, numOfTopics , outFileName):
 		for user_con in user.users_connections:
 			if not(user.userId in dic_nodes):
 				dic_nodes[user.userId] = actualNode
+				user.saveClass(outFile2, actualNode)
 				actualNode += 1
 			if not(user_con.userId in dic_nodes):
 				dic_nodes[user_con.userId] = actualNode
+				user_con.saveClass(outFile2, actualNode)
 				actualNode += 1
 			outFile.write(str(dic_nodes[user.userId]) + srtRelacion + str(dic_nodes[user_con.userId]) + ';\n')
+
 	outFile.close()
+	outFile2.close()

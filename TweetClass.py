@@ -29,8 +29,9 @@ class UserClass:
 				val_max = count[i]
 		self.principal_topic = i_max
 		return i_max
-	def saveClass(self, outFile):
+	def saveClass(self, outFile, idNodeInGraph):
 		print(self.userId, file=outFile)
+		print(idNodeInGraph, file=outFile)
 		print(len(self.users_connections), file=outFile)
 		for user_con in self.users_connections:
 			print(user_con.userId , file=outFile)

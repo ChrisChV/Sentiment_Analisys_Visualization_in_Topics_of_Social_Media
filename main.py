@@ -121,7 +121,7 @@ for i in range(0,len(tweet_set)):
 
 print("Guardando Tweets...")
 saveTweets(tweet_set, "out_tweets")
-saveUsers(dic_user, "out_users")
+#saveUsers(dic_user, "out_users")
 #updateTweets(tweet_set, collection)
 
 print("End...")
