@@ -10,16 +10,16 @@ import pymongo
 client = MongoClient('mongodb://twitter:twitter@127.0.0.1/twitter')
 
 db = client['twitter']
-collection = db['Rusia2018']
+collection = db['FinalRusia2018']
 
-minimus = db.Rusia2018.find({},{"id":1}).sort([("id",pymongo.ASCENDING)])
+minimus = collection.find({},{"id":1}).sort([("id",pymongo.ASCENDING)])
 
 minvalue = minimus[0]["id"]
 #minvalue = 1016518293480300544; 
 
-maximus = db.Rusia2018.find({},{"id":1}).sort([("id",pymongo.DESCENDING)])
+#maximus = db.Rusia2018.find({},{"id":1}).sort([("id",pymongo.DESCENDING)])
 
-maxvalue = maximus[0]["id"]
+#maxvalue = maximus[0]["id"]
 
 
 APP_KEY = '8iuErv802dm1q9YQnOrtrcgIG'
@@ -33,7 +33,8 @@ OAUTH_TOKEN = auth['oauth_token']
 OAUTH_TOKEN_SECRET = auth['oauth_token_secret']
 
 try:
-    results = twitter.search(q='Rusia2018 -filter:retweets',lang='es',count='100',max_id=minvalue)
+    #results = twitter.search(q='FinalRusia2018',lang='es',count='100')
+    results = twitter.search(q='FinalRusia2018',lang='es',count='100',max_id=minvalue)
     #results = twitter.search(q='Rusia2018 -filter:retweets',lang='es',count='100',since_id=maxvalue)
 
 except TwythonError as e:
