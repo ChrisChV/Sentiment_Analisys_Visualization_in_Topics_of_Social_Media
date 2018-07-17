@@ -10,7 +10,6 @@ QUALITY FUNCTIONS:
 """
 
 
-
 COMUNIDADES_MAXIMAS = 15
 
 
@@ -61,4 +60,20 @@ with open('out_graph_users','r') as file:
 out_final.close()
 
 
-#print dict_communities
+out_graph2 = open('out_graph2','w')
+
+# save file for testing :'v
+with open('out_graph', 'r') as file:
+	for row in file:
+		user1, user2 = row.split()
+		if(dict_user[user1] in dict_final and dict_user[user2] in dict_final):
+			out_graph2.write(str(user1) + ' '  +  str(user2) + '\n')
+
+out_graph2.close()
+
+with open('out_graph', 'r') as file:
+	for row in file:
+		user1, user2 = row.split()
+		if(dict_user[user1] in dict_final and dict_user[user2] in dict_final):
+			out_graph2.write(str(user1) + ' '  +  str(user2) + '\n')
+

@@ -4,23 +4,23 @@
 from pymongo import MongoClient
 from twython import Twython
 from urlparse import urlparse
+import sys
 import json
 import pymongo
+
+
+if(len(sys.argv) != 2):
+    print "Argumentos invalidos"
+    exit()
+
+print sys.argv[1]
+
+hashtag = sys.argv[1]
 
 client = MongoClient('mongodb://twitter:twitter@127.0.0.1/twitter')
 
 db = client['twitter']
-collection = db['FinalRusia2018']
-
-#minimus = collection.find({},{"id":1}).sort([("id",pymongo.ASCENDING)])
-
-#minvalue = minimus[0]["id"]
-#minvalue = 1016518293480300544; 
-
-#maximus = db.Rusia2018.find({},{"id":1}).sort([("id",pymongo.DESCENDING)])
-
-#maxvalue = maximus[0]["id"]
-
+collection = db[hashtag+"tmp"]
 
 APP_KEY = '8iuErv802dm1q9YQnOrtrcgIG'
 APP_SECRET = 'dMnTqnQvUwOk0foTcSl0yDp8MDThsgdsgAD0W5Ox6qrOw3QnsY'
@@ -33,9 +33,7 @@ OAUTH_TOKEN = auth['oauth_token']
 OAUTH_TOKEN_SECRET = auth['oauth_token_secret']
 
 try:
-    #results = twitter.search(q='FinalRusia2018',lang='es',count='100')
-    results = twitter.search(q='FinalRusia2018',lang='es',count='100',max_id=minvalue)
-    #results = twitter.search(q='Rusia2018 -filter:retweets',lang='es',count='100',since_id=maxvalue)
+    results = twitter.search(q=hashtag,lang='es',count='100')
 
 except TwythonError as e:
     print e
@@ -48,4 +46,3 @@ for tweet in results['statuses']:
     collection.insert(tweet)
 
 #print json.dumps(ultimo, indent=4, sort_keys=True)
-
