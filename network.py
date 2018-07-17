@@ -6,6 +6,7 @@ def generateGraph(user_set, numOfTopics , outFileName):
 	outFile = open(outFileName, 'w')
 	outFile2 = open("out_test", 'w')
 	outFile3 = open(outFileName + "_users", 'w')
+	outFile4 = open()
 	srtRelacion = " -- "
 	srtTopic = "topic"
 	dic_nodes = {}

@@ -22,12 +22,12 @@ def generateJson(tweet_set, fileName):
 		outFile.write("\"text\":\"" + tweet.originalTweet.replace('\n',' ').replace('\"', ' ').encode("utf-8") + '\",\n')
 		outFile.write("\"sentiment\":\"" + getStrOfSentiment(tweet.primarySent) + '\",\n')
 		outFile.write("\"userId\":\"" + str(tweet.usuario.userId) + '\"\n')
-		outFile.write(']')
+		outFile.write('}')
 		if(actual != len(tweet_set) - 1):
 			outFile.write(',')
 		outFile.write('\n')
 		actual += 1
-	outFile.write('[')
+	outFile.write(']')
 	outFile.close()
 
 
