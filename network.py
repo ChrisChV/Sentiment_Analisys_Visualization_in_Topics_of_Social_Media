@@ -5,7 +5,7 @@ from TweetClass import *
 def generateGraph(user_set, numOfTopics , outFileName):
 	outFile = open(outFileName, 'w')
 	outFile2 = open("out_test", 'w')
-	outFile3 = open(outFileName, 'w')
+	outFile3 = open(outFileName + "_users", 'w')
 	srtRelacion = " -- "
 	srtTopic = "topic"
 	dic_nodes = {}
@@ -38,3 +38,4 @@ def generateGraph(user_set, numOfTopics , outFileName):
 
 	outFile.close()
 	outFile2.close()
+	outFile3.close()
