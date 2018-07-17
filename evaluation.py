@@ -42,3 +42,18 @@ def getTopic(tweet, topics, dictionaryWord, dictByTopic):
 			i_max = i
 			valor_max = valores[i]
 	return i_max
+
+def loadUserCommunities(fileName):	
+	userDic = {}
+	communitiesDic = []
+	with open(fileName) as infile:
+		for line in infile:
+			line = line.rstrip('\n').split()
+			userDic[line[0]] = line[2]
+			communitiesDic[line[2]] = line[0]
+	return userDic, communitiesDic
+
+
+
+
+
