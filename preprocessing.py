@@ -15,6 +15,9 @@ def preprocessing(doc_set):
 	tokenizer = RegexpTokenizer(r'\w+')
 
 	es_stop = get_stop_words('es')
+	es_stop.append(u'rt')
+	es_stop.append(u'RT')
+	es_stop.append(u'Rt')
 	
 	normEsp = Cucco(language='es')
 	norms = ['remove_stop_words', 'replace_punctuation', 'remove_extra_whitespaces', 'remove_accent_marks']

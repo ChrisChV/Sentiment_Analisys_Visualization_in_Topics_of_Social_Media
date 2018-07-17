@@ -23,7 +23,7 @@ tweet_set = []
 dic_user = {}
 client = MongoClient('mongodb://twitter:twitter@192.168.1.13/twitter')
 db = client['twitter']
-collection = db['HectorBecerril']
+collection = db['FinalRusia2018']
 c = 0
 #for tweet in collection.find({},{"_id":1, "text":1,"user":1, "in_reply_to_user_id":1}):
 for tweet in collection.find({},{"_id":1, "text":1,"user":1, "retweeted_status":1}):
