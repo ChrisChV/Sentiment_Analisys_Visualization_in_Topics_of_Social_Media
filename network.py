@@ -6,6 +6,7 @@ def generateGraph(user_set, numOfTopics , outFileName):
 	outFile = open(outFileName, 'w')
 	outFile2 = open("out_test", 'w')
 	outFile3 = open(outFileName + "_users", 'w')
+	outFile4 = open(outFileName + "_users_topics", 'w')
 	srtRelacion = " -- "
 	srtTopic = "topic"
 	dic_nodes = {}
@@ -28,14 +29,17 @@ def generateGraph(user_set, numOfTopics , outFileName):
 				dic_nodes[user.userId] = actualNode
 				user.saveClass(outFile2, actualNode)
 				outFile3.write(str(user.userId) + " " + str(actualNode) + '\n')
+				outFile4.write(str(user.userId) + " " + str(user.principal_topic) + '\n')
 				actualNode += 1
 			if not(user_con.userId in dic_nodes):
 				dic_nodes[user_con.userId] = actualNode
 				user_con.saveClass(outFile2, actualNode)
 				outFile3.write(str(user_con.userId) + " " + str(actualNode) + '\n')
+				outFile4.write(str(user_con.userId) + " " + str(user_con.principal_topic) + '\n')
 				actualNode += 1
 			outFile.write(str(dic_nodes[user.userId]) + srtRelacion + str(dic_nodes[user_con.userId]) + ';\n')
 
 	outFile.close()
 	outFile2.close()
 	outFile3.close()
+	outFile4.close()

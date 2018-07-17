@@ -9,6 +9,8 @@ from evaluation import *
 from TweetClass import *
 from network import * 
 
+IP_MONGO_SERVER = "172.16.5.59"
+
 
 doc_a = u'Hola mundo este es el mensaje uno y dos por dos. Queremos'
 doc_b = u'Adios mundo voy a ir a comer. Fin del mensaje 2.'
@@ -21,7 +23,7 @@ print('Obteniendo Datos...')
 doc_set = []
 tweet_set = []
 dic_user = {}
-client = MongoClient('mongodb://twitter:twitter@192.168.1.13/twitter')
+client = MongoClient('mongodb://twitter:twitter@' + IP_MONGO_SERVER + '/twitter')
 db = client['twitter']
 collection = db['FinalRusia2018']
 c = 0

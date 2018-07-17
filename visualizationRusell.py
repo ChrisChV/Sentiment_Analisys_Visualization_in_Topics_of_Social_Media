@@ -8,8 +8,14 @@ from rusell import *
 from evaluation import * 
 from TweetClass import *
 from network import * 
+from pymongo import MongoClient
+from twython import Twython
+from urlparse import urlparse
 import sys
+import json
+import pymongo
 
+IP_MONGO_SERVER = "172.16.5.59"
 
 def generateJson(tweet_set, fileName):
 	outFile = open(fileName, 'w')
@@ -30,18 +36,49 @@ def generateJson(tweet_set, fileName):
 	outFile.write(']')
 	outFile.close()
 
+def getTweets(hashtag):
 
-hastag = sys.argv[1]
+	client = MongoClient('mongodb://twitter:twitter@' + IP_MONGO_SERVER + '/twitter')
+
+	db = client['twitter']
+	collection = db[hashtag+"tmp"]
+
+	APP_KEY = '8iuErv802dm1q9YQnOrtrcgIG'
+	APP_SECRET = 'dMnTqnQvUwOk0foTcSl0yDp8MDThsgdsgAD0W5Ox6qrOw3QnsY'
+
+	twitter = Twython(APP_KEY, APP_SECRET)
+
+	auth = twitter.get_authentication_tokens()
+
+	OAUTH_TOKEN = auth['oauth_token']
+	OAUTH_TOKEN_SECRET = auth['oauth_token_secret']
+
+	try:
+	    results = twitter.search(q=hashtag,lang='es',count='100')
+
+	except TwythonError as e:
+	    print(e) 
+
+	for tweet in results['statuses']:
+	    print('Usuario @%s Fecha: %s' % (tweet['user']['screen_name'].encode('utf-8'), tweet['created_at']))
+	    ultimo = tweet
+	    print('Geo: ' + tweet['user']['location'])
+	    print('Contenido: ' + tweet['text'].encode('utf-8'), '\n\n')
+	    collection.insert(tweet)
+
+hashtag = sys.argv[1]
 num_tweets = int(sys.argv[2])
 num_topics = int(sys.argv[3])
 num_iterations = int(sys.argv[4])
+
+getTweets(hashtag)
 
 doc_set = []
 tweet_set = []
 dic_user = {}
 client = MongoClient('mongodb://twitter:twitter@172.16.5.59/twitter')
 db = client['twitter']
-collection = db['FinalRusia2018']
+collection = db[hashtag+"tmp"]
 c = 0
 #for tweet in collection.find({},{"_id":1, "text":1,"user":1, "in_reply_to_user_id":1}):
 for tweet in collection.find({},{"_id":1, "text":1,"user":1, "retweeted_status":1}):
@@ -74,6 +111,7 @@ for tweet in collection.find({},{"_id":1, "text":1,"user":1, "retweeted_status":
 k_topics = num_topics
 LDA_iterations = num_iterations
 sentimentPoints = getSentimentPoints()
+print(sentimentPoints)
 
 dictionary, corpus, out_set = preprocessing(doc_set)
 
