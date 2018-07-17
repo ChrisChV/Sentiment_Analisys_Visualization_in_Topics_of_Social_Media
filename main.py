@@ -21,13 +21,19 @@ print('Obteniendo Datos...')
 doc_set = []
 tweet_set = []
 dic_user = {}
-client = MongoClient('mongodb://twitter:twitter@cs.csunsa.win/twitter')
+client = MongoClient('mongodb://twitter:twitter@192.168.1.13/twitter')
 db = client['twitter']
-collection = db['Rusia2018']
+collection = db['HectorBecerril']
 c = 0
-for tweet in collection.find({},{"_id":1, "text":1,"user":1, "in_reply_to_user_id":1}):
+#for tweet in collection.find({},{"_id":1, "text":1,"user":1, "in_reply_to_user_id":1}):
+for tweet in collection.find({},{"_id":1, "text":1,"user":1, "retweeted_status":1}):
 	userId = tweet['user']['id']
-	userIdConnec = tweet['in_reply_to_user_id']
+	#userIdConnec = tweet['in_reply_to_user_id']
+	if('retweeted_status' in tweet):
+		userIdConnec = tweet['retweeted_status']['id']
+	else:
+		userIdConnec = False
+
 	if not(userId in dic_user):
 		dic_user[userId] = UserClass(userId)
 	if(userIdConnec):
