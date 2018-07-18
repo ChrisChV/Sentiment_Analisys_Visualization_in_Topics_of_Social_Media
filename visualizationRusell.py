@@ -41,7 +41,7 @@ def getTweets(hashtag):
 	client = MongoClient('mongodb://twitter:twitter@' + IP_MONGO_SERVER + '/twitter')
 
 	db = client['twitter']
-	collection = db[hashtag+"tmp"]
+	collection = db[hashtag.encode("utf-8")+"tmp"]
 
 	APP_KEY = '8iuErv802dm1q9YQnOrtrcgIG'
 	APP_SECRET = 'dMnTqnQvUwOk0foTcSl0yDp8MDThsgdsgAD0W5Ox6qrOw3QnsY'
@@ -76,7 +76,7 @@ getTweets(hashtag)
 doc_set = []
 tweet_set = []
 dic_user = {}
-client = MongoClient('mongodb://twitter:twitter@172.16.5.59/twitter')
+client = MongoClient('mongodb://twitter:twitter@' + IP_MONGO_SERVER + '/twitter')
 db = client['twitter']
 collection = db[hashtag+"tmp"]
 c = 0
