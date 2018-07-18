@@ -15,10 +15,10 @@ import sys
 import json
 import pymongo
 
-IP_MONGO_SERVER = "172.16.5.59"
+IP_MONGO_SERVER = "127.0.0.1"
 
 def generateJson(tweet_set, fileName):
-	outFile = open(fileName, 'w')
+	outFile = open(os.path.dirname(os.path.abspath(__file__)) + "/" + fileName, "w")
 	outFile.write('[')
 	actual = 0
 	for tweet in tweet_set:
@@ -60,10 +60,10 @@ def getTweets(hashtag):
 	    print(e) 
 
 	for tweet in results['statuses']:
-	    print('Usuario @%s Fecha: %s' % (tweet['user']['screen_name'].encode('utf-8'), tweet['created_at']))
+	    #print('Usuario @%s Fecha: %s' % (tweet['user']['screen_name'].encode('utf-8'), tweet['created_at']))
 	    ultimo = tweet
-	    print('Geo: ' + tweet['user']['location'])
-	    print('Contenido: ' + tweet['text'].encode('utf-8'), '\n\n')
+	    #print('Geo: ' + tweet['user']['location'])
+	    #print('Contenido: ' + tweet['text'].encode('utf-8'), '\n\n')
 	    collection.insert(tweet)
 
 hashtag = sys.argv[1]
@@ -111,7 +111,7 @@ for tweet in collection.find({},{"_id":1, "text":1,"user":1, "retweeted_status":
 k_topics = num_topics
 LDA_iterations = num_iterations
 sentimentPoints = getSentimentPoints()
-print(sentimentPoints)
+#print(sentimentPoints)
 
 dictionary, corpus, out_set = preprocessing(doc_set)
 

@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import os
 import re
 import unicodedata
 from sentiments import *
 
-DICTONARY_FILE_ = "DICT_v1.csv"
+DICTONARY_FILE_ = os.path.dirname(os.path.abspath(__file__)) + "/DICT_v1.csv"
 F_D_ = {'w': 1, 'v_m': 2, 'v_o': 3, 'a_m': 5, 'a_o': 6}
 SEPARATOR_ = ","
 
@@ -25,7 +26,7 @@ def loadDict():
 			s = removeAccents(row[F_D_['w']])
 			dicty[s] = {'v': [float(row[F_D_['v_m']]), float(row[F_D_['v_o']])], 'a': [float(row[F_D_['a_m']]), float(row[F_D_['a_o']])]}
 			i += 1
-	print `i` + " words loaded"
+	#print `i` + " words loaded"
 	return dicty
 
 def getSentimentScore(tokens, dictByTopic, dictTokens):
