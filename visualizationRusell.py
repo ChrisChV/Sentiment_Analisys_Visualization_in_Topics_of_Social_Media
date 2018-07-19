@@ -27,8 +27,9 @@ def generateJson(tweet_set, fileName):
 		outFile.write("\"y\":" + str(tweet.russell_tuple[1]) + ',\n')
 		outFile.write("\"text\":\"" + tweet.originalTweet.replace('\n',' ').replace('\"', ' ').encode("utf-8") + '\",\n')
 		outFile.write("\"sentiment\":\"" + getStrOfSentiment(tweet.primarySent) + '\",\n')
-		outFile.write("\"userId\":\"" + str(tweet.usuario.userId) + '\"\n')
-		outFile.write("\"topic\":" + str(tweet.topic) + '\n')
+		outFile.write("\"userId\":\"" + str(tweet.usuario.userId) + '\",\n')
+		outFile.write("\"topic\":" + str(tweet.topic) + ',\n')
+		outFile.write("\"sentimentTopic\":\"" + getStrOfSentiment(tweet.topicSent) + '\"\n')
 		outFile.write('}')
 		if(actual != len(tweet_set) - 1):
 			outFile.write(',')
@@ -140,6 +141,9 @@ for topic in topics:
 for i in range(0,len(tweet_set)):
 	tweet_set[i].polaritySent = getPolaritySent(tweet_set[i].russell_tuple)
 	tweet_set[i].primarySent, tweet_set[i].characteristic_vector = getPrimarySent(tweet_set[i].russell_tuple, sentimentPoints)
+	tweet_set[i].topic = getTopic(tweet_set[i].wordSet, model.get_topics(), dictionary, dictByTopic)
+	tweet_set[i].russell_tuple_topic = getSentimentScore(tweet_set[i].wordSet, dictByTopic[tweet_set[i].topic], sentDic)
+	tweet_set[i].topicSent, tweet_set[i].topic_characteristic_vector = getPrimarySent(tweet_set[i].russell_tuple_topic, sentimentPoints)
 
 generateJson(tweet_set, "russell_sents.json")
 
