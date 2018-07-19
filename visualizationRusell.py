@@ -25,6 +25,8 @@ def generateJson(tweet_set, fileName):
 		outFile.write('{' + '\n')
 		outFile.write("\"x\":" + str(tweet.russell_tuple[0]) + ',\n')
 		outFile.write("\"y\":" + str(tweet.russell_tuple[1]) + ',\n')
+		outFile.write("\"t_x\":" + str(tweet.russell_tuple_topic[0]) + ',\n')
+		outFile.write("\"t_y\":" + str(tweet.russell_tuple_topic[1]) + ',\n')
 		outFile.write("\"text\":\"" + tweet.originalTweet.replace('\n',' ').replace('\"', ' ').encode("utf-8") + '\",\n')
 		outFile.write("\"sentiment\":\"" + getStrOfSentiment(tweet.primarySent) + '\",\n')
 		outFile.write("\"userId\":\"" + str(tweet.usuario.userId) + '\"\n')

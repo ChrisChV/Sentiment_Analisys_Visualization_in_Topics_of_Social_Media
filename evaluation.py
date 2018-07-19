@@ -45,13 +45,69 @@ def getTopic(tweet, topics, dictionaryWord, dictByTopic):
 
 def loadUserCommunities(fileName):	
 	userDic = {}
-	communitiesDic = []
+	communitiesDic = {}
 	with open(fileName) as infile:
 		for line in infile:
-			line = line.rstrip('\n').split()
+			line = line.rstrip('\n').split()	
 			userDic[line[0]] = line[2]
-			communitiesDic[line[2]] = line[0]
+			if not(line[2] in communitiesDic):
+				communitiesDic[line[2]] = []
+			communitiesDic[line[2]].append(line[0])
 	return userDic, communitiesDic
+
+def getUserCommunitySet(userDic, user_set):
+	user_community_set = {}
+	for userID, communityId in userDic.iteritems():
+		if not(communityId in user_community_set):
+			user_community_set[communityId] = []
+		if(userID in user_set):
+			user_community_set[communityId].append(user_set[userID])
+	return user_community_set
+
+
+def getShanonEntropy(user_community_set, communityId, numOfTopics):
+	generalSentValues = [0] * 19
+	topicSentValues = [[0] * 16] * numOfTopics
+	generalSentProbs = [0] * 19
+	topicSentProbs = []
+	for user in user_community_set[communityId]:
+		for tweet in user.tweet_set:
+			generalSentValues[tweet.polaritySent] += 1
+			generalSentValues[tweet.primarySent] += 1
+			topicSentValues[user.principal_topic][tweet.topicSent] += 1
+	sumPrincipalSents = 0
+	sumPolaritySents = 0
+	sumTopicSents = [sum(values) for values in topicSentValues]
+	for i in range(0,19):
+		if(i == 17 or i == 18):
+			sumPolaritySents += generalSentValues[i]
+		else:
+			sumPrincipalSents += generalSentValues[i]
+	for i in range(0,19):
+		if(i == 17 or i == 18):
+			generalSentProbs[i] = generalSentValues[i] / sumPolaritySents
+		else:
+			generalSentProbs[i] = generalSentValues[i] / sumPrincipalSents
+	for i in range(0,numOfTopics):
+		topicSentProbs.append([val / sumTopicSents[i] for val in topicSentValues[i]])
+	#polarityShanonEntropy = 0
+	#principalShanonEntropy = 0
+	for i in range(17,18):
+		if(generalSentProbs[i] )
+		polarityShanonEntropy +=  -(generalSentProbs[i]) * math.log2(generalSentProbs[i])
+	for i in range(0,17):
+		principalShanonEntropy +=  -(generalSentProbs[i]) * math.log2(generalSentProbs[i])
+
+	#polarityShanonEntropy =  -1 * sum([generalSentProbs[i] * math.log(generalSentProbs[i],2) for i in range(17,19)])
+	#principalShanonEntropy = -1 * sum([generalSentProbs[i] * math.log2(generalSentProbs[i],2) for i in range(0,17)])
+	topicShanonEntropy = []
+	for i in range(0, numOfTopics):
+		tempSum = 0
+		for prob in topicSentProbs[i]:
+			tempSum += -(prob) * math.log2(prob)
+		topicShanonEntropy.append(tempSum)
+		#topicShanonEntropy.append(-1 * sum([prob * math.log(prob,2) for prob in topicSentProbs[i]]))
+	return polarityShanonEntropy, principalShanonEntropy, topicShanonEntropy
 
 
 
