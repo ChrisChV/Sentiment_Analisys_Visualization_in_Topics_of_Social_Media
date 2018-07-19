@@ -148,10 +148,13 @@ for i in range(0,k_topics):
 	valoresPersonOfTopics.append(person(sentimentsOfTopics[i]))
 
 
-print(str(len(tweet_set)) + " " + str(len(dic_user)) + " " + str(person(sentimentsOfTweets)))
+sentAssorFilr = open("out_sentAssort.csv", 'w')
+print(",#tweets,#usuarios,Sentiment Assortativity", file=sentAssorFilr)
+print("Conversación principal," + str(len(tweet_set)) + "," + str(len(dic_user)) + "," + str(person(sentimentsOfTweets)), file=sentAssorFilr)	
 for i in range(0,k_topics):
-	print(str(TweetInTopicCount[i]) + " " + str(UserInTopicCount[i]) + " " + str(valoresPersonOfTopics[i]))
+	print("Topico " + str(i+1) + "," + str(TweetInTopicCount[i]) + "," + str(UserInTopicCount[i]) + "," + str(valoresPersonOfTopics[i]), file=sentAssorFilr)
 
+sentAssorFilr.close()
 
 generateGraph(dic_user, k_topics, "out_graph")
 saveCharacteristicVectors(tweet_set, "out_chac")
@@ -163,15 +166,65 @@ for i in range(0, k_topics):
 
 userDicCom, communitiesDic = loadUserCommunities("userCommunities")
 user_community_set = getUserCommunitySet(userDicCom, dic_user)
-shannonFile = open("out_shannon", 'w')
+#shannonFile = open("out_shannon", 'w')
+polaritySE = []
+principalSE = []
+topicSE = []
+numOfUsersInTopicsSE = []
 for communityId, temp in user_community_set.iteritems():
-	polarityShanonEntropy, principalShanonEntropy, topicShanonEntropy = getShanonEntropy(user_community_set, communityId, k_topics)
-	print(communityId, file=shannonFile)
-	print(polarityShanonEntropy, file=shannonFile)
-	print(principalShanonEntropy, file=shannonFile)
-	print(topicShanonEntropy, file=shannonFile)
+	polarityShanonEntropy, principalShanonEntropy, topicShanonEntropy, numOfUsersInTopics = getShanonEntropy(user_community_set, communityId, k_topics)
+	polaritySE.append(polarityShanonEntropy)
+	principalSE.append(principalShanonEntropy)
+	topicSE.append(topicShanonEntropy)
+	numOfUsersInTopicsSE.append(numOfUsersInTopics)
+	#print(communityId, file=shannonFile)
+	#print(polarityShanonEntropy, file=shannonFile)
+	#print(principalShanonEntropy, file=shannonFile)
+	#print(topicShanonEntropy, file=shannonFile)
 
+shannonFile = open("out_shannon.csv",'w')
+shannonFile.write('Comm,')
+for i in range(1,16):
+	shannonFile.write(str(i))
+	if(i != 15):
+		shannonFile.write(',')
+	else:
+		shannonFile.write('\n')
+shannonFile.write('Polarity,')
+#for i in range(0,15):
+i = 0
+for communityId, temp  in user_community_set.iteritems():
+	val = polaritySE[i]
+	shannonFile.write(str(val) + " (" + str(len(temp)) + ")")
+	if(i != 14):
+		shannonFile.write(',')
+	else:
+		shannonFile.write('\n')
+	i += 1
+shannonFile.write('PrimarySent,')
+i = 0
+#for i in range(0,15):
+for communityId, temp  in user_community_set.iteritems():
+	val = principalSE[i]
+	shannonFile.write(str(val) + " (" + str(len(temp)) + ")")
+	if(i != 14):
+		shannonFile.write(',')
+	else:
+		shannonFile.write('\n')
+	i += 1
+iVal = 0
 
+for i in range(0, k_topics):
+	shannonFile.write("Topic " + str(i + 1) + ",")
+	j = 0
+	for communityId, temp  in user_community_set.iteritems():
+		shannonFile.write(str(topicSE[j][i]) + " (" + str(int(numOfUsersInTopicsSE[j][i])) + ")")
+		if(j != 14):
+			shannonFile.write(',')
+		else:
+			shannonFile.write('\n')
+		j += 1
+shannonFile.close()
 
 
 

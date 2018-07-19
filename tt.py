@@ -1,5 +1,6 @@
 import math
 
-tt = [1,2,3,4,5]
+topicSentValues = [[0.0] * 19] * 3
+topicSentValues[1][1] = 10
 
-print(math.log(10,2))
+print(topicSentValues)
