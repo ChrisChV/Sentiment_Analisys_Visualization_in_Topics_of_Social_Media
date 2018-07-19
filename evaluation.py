@@ -90,13 +90,14 @@ def getShanonEntropy(user_community_set, communityId, numOfTopics):
 			generalSentProbs[i] = generalSentValues[i] / sumPrincipalSents
 	for i in range(0,numOfTopics):
 		topicSentProbs.append([val / sumTopicSents[i] for val in topicSentValues[i]])
-	#polarityShanonEntropy = 0
-	#principalShanonEntropy = 0
+	polarityShanonEntropy = 0
+	principalShanonEntropy = 0
 	for i in range(17,18):
-		if(generalSentProbs[i] )
-		polarityShanonEntropy +=  -(generalSentProbs[i]) * math.log2(generalSentProbs[i])
+		if(generalSentProbs[i] != 0):
+			polarityShanonEntropy +=  -(generalSentProbs[i]) * math.log(generalSentProbs[i],2)
 	for i in range(0,17):
-		principalShanonEntropy +=  -(generalSentProbs[i]) * math.log2(generalSentProbs[i])
+		if(generalSentProbs[i] != 0):
+			principalShanonEntropy +=  -(generalSentProbs[i]) * math.log(generalSentProbs[i],2)
 
 	#polarityShanonEntropy =  -1 * sum([generalSentProbs[i] * math.log(generalSentProbs[i],2) for i in range(17,19)])
 	#principalShanonEntropy = -1 * sum([generalSentProbs[i] * math.log2(generalSentProbs[i],2) for i in range(0,17)])
@@ -104,7 +105,8 @@ def getShanonEntropy(user_community_set, communityId, numOfTopics):
 	for i in range(0, numOfTopics):
 		tempSum = 0
 		for prob in topicSentProbs[i]:
-			tempSum += -(prob) * math.log2(prob)
+			if(prob != 0):
+				tempSum += -(prob) * math.log(prob,2)
 		topicShanonEntropy.append(tempSum)
 		#topicShanonEntropy.append(-1 * sum([prob * math.log(prob,2) for prob in topicSentProbs[i]]))
 	return polarityShanonEntropy, principalShanonEntropy, topicShanonEntropy
