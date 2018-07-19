@@ -9,7 +9,7 @@ from evaluation import *
 from TweetClass import *
 from network import * 
 
-IP_MONGO_SERVER = "172.16.5.59"
+IP_MONGO_SERVER = "192.168.1.13"
 
 
 doc_a = u'Hola mundo este es el mensaje uno y dos por dos. Queremos'
@@ -29,7 +29,7 @@ collection = db['FinalRusia2018']
 c = 0
 #for tweet in collection.find({},{"_id":1, "text":1,"user":1, "in_reply_to_user_id":1}):
 for tweet in collection.find({},{"_id":1, "text":1,"user":1, "retweeted_status":1}):
-	userId = tweet['user']['id']
+	userId = str(tweet['user']['id'])
 	#userIdConnec = tweet['in_reply_to_user_id']
 	if('retweeted_status' in tweet):
 		userIdConnec = tweet['retweeted_status']['id']
@@ -159,6 +159,22 @@ saveRussellTuples(tweet_set, "out_rusell")
 for i in range(0, k_topics):
 	saveTopicCharacteristicVectors(tweet_set, "out_chacTopic" + str(i), i)
 	saveRusellTuplesTopic(tweet_set, "out_rusellTopic" + str(i), i)	
+
+
+userDicCom, communitiesDic = loadUserCommunities("userCommunities")
+user_community_set = getUserCommunitySet(userDicCom, dic_user)
+shannonFile = open("out_shannon", 'w')
+for communityId, temp in user_community_set.iteritems():
+	polarityShanonEntropy, principalShanonEntropy, topicShanonEntropy = getShanonEntropy(user_community_set, communityId, k_topics)
+	print(communityId, file=shannonFile)
+	print(polarityShanonEntropy, file=shannonFile)
+	print(principalShanonEntropy, file=shannonFile)
+	print(topicShanonEntropy, file=shannonFile)
+
+
+
+
+
 
 
 
