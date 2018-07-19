@@ -116,6 +116,6 @@ for i in range(0,len(tweet_set)):
 	tweet_set[i].topicSent, tweet_set[i].topic_characteristic_vector = getPrimarySent(tweet_set[i].russell_tuple_topic, sentimentPoints)
 
 
-generateJson(tweet_set, "rusia2018_1000.json")
+generateJson(tweet_set, "rusia2018_2000.json")
 
 sys.exit(1)
