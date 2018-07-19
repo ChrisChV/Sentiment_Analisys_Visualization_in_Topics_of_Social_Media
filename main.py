@@ -157,10 +157,10 @@ for i in range(0,k_topics):
 sentAssorFilr.close()
 
 generateGraph(dic_user, k_topics, "out_graph")
-saveCharacteristicVectors(tweet_set, "out_chac")
+saveCharacteristicVectors(tweet_set, "out_chac.data")
 saveRussellTuples(tweet_set, "out_rusell")
 for i in range(0, k_topics):
-	saveTopicCharacteristicVectors(tweet_set, "out_chacTopic" + str(i), i)
+	saveTopicCharacteristicVectors(tweet_set, "out_chacTopic" + str(i) + ".data", i)
 	saveRusellTuplesTopic(tweet_set, "out_rusellTopic" + str(i), i)	
 
 
