@@ -66,17 +66,21 @@ def getUserCommunitySet(userDic, user_set):
 
 
 def getShanonEntropy(user_community_set, communityId, numOfTopics):
-	generalSentValues = [0] * 19
-	topicSentValues = [[0] * 16] * numOfTopics
-	generalSentProbs = [0] * 19
+	generalSentValues = [0.0] * 19
+	topicSentValues = []
+	for i in range(0,numOfTopics):
+		topicSentValues.append([0.0] * 19)
+	generalSentProbs = [0.0] * 19
 	topicSentProbs = []
+	numOfUsersInTopics = [0.0] * numOfTopics
 	for user in user_community_set[communityId]:
+		numOfUsersInTopics[user.principal_topic] += 1
 		for tweet in user.tweet_set:
 			generalSentValues[tweet.polaritySent] += 1
 			generalSentValues[tweet.primarySent] += 1
 			topicSentValues[user.principal_topic][tweet.topicSent] += 1
-	sumPrincipalSents = 0
-	sumPolaritySents = 0
+	sumPrincipalSents = 0.0
+	sumPolaritySents = 0.0
 	sumTopicSents = [sum(values) for values in topicSentValues]
 	for i in range(0,19):
 		if(i == 17 or i == 18):
@@ -87,9 +91,12 @@ def getShanonEntropy(user_community_set, communityId, numOfTopics):
 		if(i == 17 or i == 18):
 			generalSentProbs[i] = generalSentValues[i] / sumPolaritySents
 		else:
-			generalSentProbs[i] = generalSentValues[i] / sumPrincipalSents
+			generalSentProbs[i] = generalSentValues[i] / sumPrincipalSents	
 	for i in range(0,numOfTopics):
-		topicSentProbs.append([val / sumTopicSents[i] for val in topicSentValues[i]])
+		if(sumTopicSents[i] != 0):
+			topicSentProbs.append([val / float(sumTopicSents[i]) for val in topicSentValues[i]])
+		else:
+			topicSentProbs.append([0] * len(topicSentValues[i]))
 	polarityShanonEntropy = 0
 	principalShanonEntropy = 0
 	for i in range(17,18):
@@ -109,7 +116,7 @@ def getShanonEntropy(user_community_set, communityId, numOfTopics):
 				tempSum += -(prob) * math.log(prob,2)
 		topicShanonEntropy.append(tempSum)
 		#topicShanonEntropy.append(-1 * sum([prob * math.log(prob,2) for prob in topicSentProbs[i]]))
-	return polarityShanonEntropy, principalShanonEntropy, topicShanonEntropy
+	return polarityShanonEntropy, principalShanonEntropy, topicShanonEntropy, numOfUsersInTopics
 
 
 
