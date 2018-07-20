@@ -25,7 +25,7 @@ array_paises = []
 
 cc = coco.CountryConverter()
 
-client = MongoClient('mongodb://twitter:twitter@192.168.1.13/twitter')
+client = MongoClient('mongodb://twitter:twitter@127.0.0.1/twitter')
 
 db = client['twitter']
 collection = db[hashtag]
@@ -76,6 +76,8 @@ for doc in allUsers:
                     i+=1
             
         except KeyError as e:
+            if(")" in localizacion):
+                continue
             standard_names = cc.convert(names=localizacion, to='ISO2')
             if(len(standard_names) == 3):
                 my_dict[standard_names]+=1
