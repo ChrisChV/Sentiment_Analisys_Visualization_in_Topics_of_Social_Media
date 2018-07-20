@@ -52,6 +52,7 @@ class TweetClass:
 		self.primarySent = 0
 		self.topicSent = 0
 		self.topic = 0
+		self.comunidad = 0
 		self.tweetId = ""
 
 
@@ -113,6 +114,7 @@ class TweetClass:
 	polaritySent = 0
 	primarySent = 0
 	topicSent = 0
+	comunidad = 0
 	topic = 0
 
 def saveCharacteristicVectors(tweet_set, fileName):

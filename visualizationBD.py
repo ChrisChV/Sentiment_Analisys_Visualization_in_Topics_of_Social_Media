@@ -15,7 +15,7 @@ import sys
 import json
 import pymongo
 
-IP_MONGO_SERVER = "192.168.1.13"
+IP_MONGO_SERVER = "192.168.0.21"
 
 def generateJson(tweet_set, fileName):
 	outFile = open(os.path.dirname(os.path.abspath(__file__)) + "/" + fileName, "w")
@@ -31,7 +31,8 @@ def generateJson(tweet_set, fileName):
 		outFile.write("\"sentiment\":\"" + getStrOfSentiment(tweet.primarySent) + '\",\n')
 		outFile.write("\"userId\":\"" + str(tweet.usuario.userId) + '\",\n')
 		outFile.write("\"topic\":" + str(tweet.topic) + ',\n')
-		outFile.write("\"sentimentTopic\":\"" + getStrOfSentiment(tweet.topicSent) + '\"\n')
+		outFile.write("\"sentimentTopic\":\"" + getStrOfSentiment(tweet.topicSent) + '\",\n')
+		outFile.write("\"comunidad\":" + str(tweet.comunidad) + '\n')
 		outFile.write('}')
 		if(actual != len(tweet_set) - 1):
 			outFile.write(',')
@@ -62,16 +63,16 @@ for tweet in collection.find({},{"_id":1, "text":1,"user":1, "retweeted_status":
 		userIdConnec = False
 
 	if not(userId in dic_user):
-		dic_user[userId] = UserClass(userId)
+		dic_user[str(userId)] = UserClass(userId)
 	if(userIdConnec):
 		#print("AAAAAAAAAAAA")
 		if not(userIdConnec in dic_user):
-			dic_user[userIdConnec] = UserClass(userIdConnec)
-		dic_user[userId].addUser(dic_user[userIdConnec])
+			dic_user[str(userIdConnec)] = UserClass(userIdConnec)
+		dic_user[str(userId)].addUser(dic_user[str(userIdConnec)])
 	doc_set.append(tweet['text'])
-	tweet_set.append(TweetClass(tweet['text'], dic_user[userId]))
+	tweet_set.append(TweetClass(tweet['text'], dic_user[str(userId)]))
 	tweet_set[len(tweet_set) - 1].tweetId = tweet['_id']
-	dic_user[userId].addTweet(tweet_set[len(tweet_set) - 1])
+	dic_user[str(userId)].addTweet(tweet_set[len(tweet_set) - 1])
 
 	c += 1
 	if c == num_tweets:
@@ -115,7 +116,21 @@ for i in range(0,len(tweet_set)):
 	tweet_set[i].russell_tuple_topic = getSentimentScore(tweet_set[i].wordSet, dictByTopic[tweet_set[i].topic], sentDic)
 	tweet_set[i].topicSent, tweet_set[i].topic_characteristic_vector = getPrimarySent(tweet_set[i].russell_tuple_topic, sentimentPoints)
 
+userDicCom, communitiesDic = loadUserCommunities("userCommunities")
+user_community_set = getUserCommunitySet(userDicCom, dic_user)
+dic_communisty_id = {}
+actual = 0
+for ComID,  temp in user_community_set.iteritems():
+	dic_communisty_id[ComID] = actual
+	actual += 1
 
-generateJson(tweet_set, "rusia2018_3000.json")
+for ComID, user_set in user_community_set.iteritems():
+	for user in user_set:
+		for tweet in user.tweet_set:
+			tweet.comunidad = dic_communisty_id[ComID]
+
+
+
+generateJson(tweet_set, "rusia2018_2000_2.json")
 
 sys.exit(1)
